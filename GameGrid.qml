@@ -42,6 +42,53 @@ Grid {
         whiteSquares = white;
     }
 
+    function recursiveFlip(r, c, rowOffset, colOffset, color) {
+        if (r >= rows || r < 0 || c >= columns || c < 0) {
+            return false;
+        }
+
+        var item = square(r, c);
+        if (item.state == color ) {
+            return true;
+        } else if (item.state == "empty") {
+            return false;
+        }
+
+        // if the recursion returns true, we need to flip the square color
+        if (recursiveFlip(r+rowOffset, c+colOffset, rowOffset, colOffset, color)) {
+            item.state = color;
+            return true;
+        }
+
+        return false;
+    }
+
+    function flipDirection(row, col, rowOffset, colOffset, color, justCheck) {
+        // if the first item in a given direction is of the same color as the adjascent one
+        // return false
+        var item = square(row+rowOffset, col+colOffset);
+        if (item && item.state == color) {
+            return false;
+        }
+
+        return recursiveFlip(row+rowOffset, col+colOffset, rowOffset, colOffset, color);
+    }
+
+    function flipSquares(row, col, color, justCheck) {
+        var flipped = false;
+        // we need to check in all directions
+        flipped |= flipDirection(row, col,  0, -1, color); // left
+        flipped |= flipDirection(row, col,  0,  1, color); // right
+        flipped |= flipDirection(row, col, -1, -1, color); // topLeft
+        flipped |= flipDirection(row, col, -1,  0, color); // top
+        flipped |= flipDirection(row, col, -1,  1, color); // topRight
+        flipped |= flipDirection(row, col,  1,  0, color); // bottom
+        flipped |= flipDirection(row, col,  1, -1, color); // bottomLeft
+        flipped |= flipDirection(row, col,  1,  1, color); // bottomRight
+
+        return flipped;
+    }
+
     Repeater {
         model: columns * rows
 
@@ -54,7 +101,7 @@ Grid {
             col: modelData % grid.columns
 
             onClicked: {
-                if (state != "empty") {
+                if (state != "empty" || !flipSquares(row, col, turn)) {
                     return;
                 }
 

@@ -38,6 +38,19 @@ Rectangle {
         radius: Math.min(width, height)
         color: "black"
         smooth: true
+        opacity: visible ? 1 : 0
+
+        Behavior on color {
+            ColorAnimation {
+                duration: 150
+            }
+        }
+
+        Behavior on opacity {
+            PropertyAnimation {
+                duration: 150
+            }
+        }
     }
 
     MouseArea {

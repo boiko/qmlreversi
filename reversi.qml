@@ -26,7 +26,6 @@ Rectangle {
         Row {
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.margins: 4
             height: childrenRect.height
 
             PlayerStats {

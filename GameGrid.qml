@@ -5,7 +5,9 @@ Grid {
     id: grid
     columns: 8
     rows: columns
-    anchors.centerIn: parent
+
+    property int blackSquares: 0
+    property int whiteSquares: 0
 
     property string turn: "black"
 
@@ -25,6 +27,21 @@ Grid {
         }
     }
 
+    function updateStats() {
+        var black = 0, white = 0
+
+        for(var i = 0; i < grid.children.length; ++i) {
+            var item = grid.children[i];
+            if (item.state == "black") {
+                black++;
+            } else if (item.state == "white") {
+                white++;
+            }
+        }
+        blackSquares = black;
+        whiteSquares = white;
+    }
+
     Repeater {
         model: columns * rows
 
@@ -42,6 +59,7 @@ Grid {
                 }
 
                 state = turn;
+                updateStats();
                 nextPlayer();
             }
         }
